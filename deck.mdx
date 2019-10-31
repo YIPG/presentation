@@ -4,93 +4,660 @@ import {
   Step,
 } from "code-surfer";
 import { github, vsDark } from "@code-surfer/themes";
+import { Layout } from "./Layout";
 
 export const theme = vsDark;
 
-# Hello 👋
+# ゼロから理解する redux
 
-You are using [MDX Deck](https://github.com/jxnblk/mdx-deck) and [Code Surfer](https://codesurfer.pomb.us)
+---
+
+# 自己紹介
+
+- 伊藤友哉
+- 東工大 B4
+- 2018/9 から React 触り始めた
+
+---
+
+Redux...使っていますか?
+
+---
+
+Redux とは
+
+<iframe
+  style={{
+    width: "90vw",
+    height: "75vh",
+    background: "white",
+  }}
+  src={"https://redux.js.org/"}
+></iframe>
+
+---
+
+よくあるコード
+
+---
+
+<CodeSurferColumns themes={[vsDark, github]}>
+
+<Step>
+
+```js title="アクション"
+export const ageChanged = (age) => {
+    return {
+        type: AGE_CHANGED,
+        payload: age
+    };
+};
+```
+
+```js title="リデューサー" 
+switch (action.type) {
+  case AGE_CHANGED:
+      return { ...state, age: action.payload };
+  default:
+      return state;
+}
+```
+
+</Step>
+
+<Step>
+
+```js title="アクション"
+export const sexChanged = (sex) => {
+    return {
+        type: SEX_CHANGED,
+        payload: sex
+    };
+};
+
+export const ageChanged = (age) => {
+    return {
+        type: AGE_CHANGED,
+        payload: age
+    };
+};
+```
+
+```js title="リデューサー"
+switch (action.type) {
+  case SEX_CHANGED:
+      return { ...state, male: action.payload };
+  case AGE_CHANGED:
+      return { ...state, age: action.payload };
+  default:
+      return state;
+}
+```
+
+</Step>
+
+<Step>
+
+```js title="アクション"
+export const sexChanged = (sex) => {
+    return {
+        type: SEX_CHANGED,
+        payload: sex
+    };
+};
+
+export const ageChanged = (age) => {
+    return {
+        type: AGE_CHANGED,
+        payload: age
+    };
+};
+
+export const regionChanged = (text) => {
+    console.log(text)
+    return {
+        type: REGION_CHANGED,
+        payload: text
+    };
+};
+
+```
+
+```js title="リデューサー"
+switch (action.type) {
+  case SEX_CHANGED:
+      return { ...state, male: action.payload };
+  case AGE_CHANGED:
+      return { ...state, age: action.payload };
+  case REGION_CHANGED:
+      return { ...state, region: action.payload };
+  default:
+      return state;
+}
+```
+
+</Step>
+
+<Step>
+
+```js title="アクション"
+export const sexChanged = (sex) => {
+    return {
+        type: SEX_CHANGED,
+        payload: sex
+    };
+};
+
+export const ageChanged = (age) => {
+    return {
+        type: AGE_CHANGED,
+        payload: age
+    };
+};
+
+export const regionChanged = (text) => {
+    console.log(text)
+    return {
+        type: REGION_CHANGED,
+        payload: text
+    };
+};
+
+export const nameChanged = (text) => {
+    return {
+        type: NAME_CHANGED,
+        payload: text
+    };
+};
+
+export const profileChanged = (text) => {
+    return {
+        type: PROFILE_CHANGED,
+        payload: text
+    };
+};
+
+export const profileImageChanged = (image) => {
+    return {
+        type: PROFILEIMAGE_CHANGED,
+        payload: image
+    };
+};
+
+export const snackChanged = (text) => {
+    return {
+        type: SNACK_CHANGED,
+        payload: text
+    };
+};
+```
+
+```js title="リデューサー"
+switch (action.type) {
+  case SEX_CHANGED:
+      return { ...state, male: action.payload };
+  case AGE_CHANGED:
+      return { ...state, age: action.payload };
+  case REGION_CHANGED:
+      return { ...state, region: action.payload };
+  case NAME_CHANGED:
+      return { ...state, name: action.payload };
+  case PROFILE_CHANGED:
+      return { ...state, profile: action.payload };
+  case PROFILEIMAGE_CHANGED:
+      return { ...state, profileImage: action.payload };
+  case SNACK_CHANGED:
+      return { ...state, snack: action.payload };
+  case IMAGE_UPLOAD_START:
+      return { ...state, imageUpoading: true};
+  case IMAGE_UPLOAD_FINISH:
+      return {...state, imageUploading: false}
+  case PROFILE_FINISH:
+      return {...state, updateLoading: true, imageUploading: true};
+  case PROFILE_FINISH_SUCCESS:
+      return {...state, updateLoading: false};
+  case PROFILE_GET_FAIL:
+      return {...state, loading:true}
+  default:
+      return state;
+}
+```
+
+</Step>
+
+</CodeSurferColumns>
 
 ---
 
 <CodeSurfer>
 
-```js title="This is a title" subtitle="and this a subtitle"
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
+```js
+console.log(1);
+console.log(2);
+console.log(3);
+```
 
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
-}
+```js 1
+console.log(1);
+console.log(2);
+console.log(3);
 ```
 
 ```js
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
-
-function adipiscing(...elit) {
-  if (!elit.sit) {
-    return [];
-  }
-
-  const sed = elit[0];
-  return eiusmod.tempor(sed) ? sed : [sed];
-}
-
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
-}
+console.log(1);
+console.log(2);
+console.log(3);
+console.log(4);
+console.log(5);
 ```
 
-```diff 1[10:14],2[15:19],3[22:27],10:12
+</CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+```js title="コンポーネント"
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import CameraAlt from '@material-ui/icons/CameraAlt';
+import { nameChanged, profileChanged, profileImageChanged, profileGet, profileFinish } from '../../actions';
+// import Fab from '@material-ui/core/Fab';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const styles = theme => ({
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    circularprogress :{
+        marginTop: theme.spacing.unit * 20
+    },
+    nameform: {
+        marginTop:  theme.spacing.unit * 2,
+        width: 150,
+    },
+    textform: {
+        marginTop:  theme.spacing.unit * 5,
+        width: 300,
+    },
+    inputZone : {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 160,
+        height: 160,
+        margin: '20px 0',
+        border: `2px dashed ${theme.palette.grey[400]}`
+    },
+    inputZoneIntro: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    inputZoneOnImage : {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 160,
+        height: 160,
+        margin: '20px 0',
+        border: `1px ${theme.palette.grey[400]}`
+    },
+    imageZone : {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // width: 160,
+        height: 160,
+    },
+    icon: {
+        fontSize: 80,
+        color: theme.palette.grey[500]
+      },
+    font: {
+        color: theme.palette.grey[500]
+    },
+    button: {
+        marginTop: theme.spacing.unit * 3
+    }
+});
+
+class Prof extends Component {
+    state = {
+        edit: false,
+        imageUpdated: false
+    }
+
+    componentDidMount(){
+        this.props.profileGet(this.props.user.uid)
+    }
+
+    onNameChange(text) {
+        this.props.nameChanged(text.target.value);
+    }
+
+    onProfileChange(text) {
+        this.props.profileChanged(text.target.value)
+    }
+
+    renderButton(){
+        if(this.props.profile.updateLoading){
+            return <CircularProgress size={30} className={this.props.classes.button} />
+        }
+        return this.state.edit && 
+            <Button
+                variant="outlined"
+                onClick={this.handleFinish.bind(this)}
+                className={this.props.classes.button}
+                color="primary"
+            >
+                完了する
+            </Button>
+        
+    }
+
+    handleChange(e){
+        this.setState({
+            imageUpdated: true
+        });
+        const files = e.target.files;
+        if(files.length !== 0) {
+            this.props.profileImageChanged(files[0])
+        }
+    }
+
+    handleFinish(){
+        const{male, age, region, name, profile, profileImage} = this.props.profile;
+
+        this.props.profileFinish({male, age, region, name, profile, profileImage});
+        this.setState({edit: !this.state.edit}) ;
+    }
+
+    render() {
+        const { classes, profile } = this.props;
+        const { profileImage } = profile;
+
+        let img_src = profile.loading? "": profile.profileImageURL;
+        let updated_image_src =  this.state.imageUpdated? URL.createObjectURL(profileImage):"";
+
+        if(profile.loading){
+            return (
+                <div className={classes.root}>
+                    <CircularProgress className={classes.circularprogress} size={60} />
+                </div>
+            )
+        }
+        return (
+            <div
+                className={classes.root}
+            >
+                <label className={profile.loading?classes.inputZone:classes.inputZoneOnImage}>
+                    {profile.loading ? 
+                        <div className={classes.inputZoneIntro}>
+                        <CameraAlt className={classes.icon} />
+                        <Typography variant="caption" className={classes.font}>必須</Typography>
+                        </div>:
+                        <img className={classes.imageZone} alt="" src={this.state.imageUpdated ? updated_image_src :img_src} />
+                    }
+                    <input 
+                        disabled={!this.state.edit}
+                        type="file"
+                        accept="image/*"
+                        onChange={this.handleChange.bind(this)}
+                        style={{display: 'none'}} 
+                    />
+                </label>
+                
+                <TextField
+                    disabled={!this.state.edit}
+                    className={classes.nameform}
+                    label='名前'
+                    value={profile.name}
+                    onChange={this.onNameChange.bind(this)}
+                    autoFocus
+                />
+                <TextField
+                    disabled={!this.state.edit}
+                    className={classes.textform}
+                    id="outlined-multiline-flexible"
+                    label='プロフィール'
+                    multiline
+                    onChange={this.onProfileChange.bind(this)}
+                    value={this.props.profile.profile}
+                    rows="8"
+                    rowsMax="15"
+                    margin="normal"
+                    helperText="例:ギターが好きです！身長は170cmです！"
+                    variant="outlined"
+                />
+                <Button
+                    variant="outlined"
+                    onClick={() => this.setState({
+                        edit: !this.state.edit
+                    })} 
+                    className={classes.button}
+                    color="default"
+                >
+                    {this.state.edit ? "キャンセル" :"編集する"}
+                </Button>
+                {this.renderButton()}
+            </div>
+        );
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        profile: state.profile,
+        user: state.auth.user
+    };
+};
+
+export default withStyles(styles)(
+    connect(mapStateToProps, {
+        nameChanged,
+        profileChanged,
+        profileImageChanged,
+        profileGet,
+        profileFinish
+    })(
+        Prof
+));
+```
+
+```diff 199:214 subtitle="reduxと接続"
+
+```
+
+```diff 199:204 subtitle="state"
+
+```
+
+```diff 208:212 subtitle="action"
+
+```
+
+</CodeSurfer>
+
+
+---
+
+### Redux作者のDan氏のツイート
+
+<Layout>
+
+My biggest regret with Redux is explaining it in terms of API instead of how to “think in it”.
+(Reduxは**API**としてでなく、**考え方**として説明するべきだった)
+
+I underestimated the temptation to twist it into a familiar conceptual model — and that it’s flexible enough to allow these contortions.
+(Reduxを自分が知ってるだけの概念にこんなにも無理やり結びつけたがるなんて、思いもしなかったよ)
+</Layout>
+
+---
+
+### Redux作者のDan氏のツイート
+
+<Layout>
+
+If you copy paste some action creators and reducers handling FETCH actions over and over and over again, you’re probably using Redux in a different way than I imagined people would do. 
+(もしも何度も同じようなFETCHアクションをコピペしてるなら、そんなふうに使われるなんて想定してなかったんだ)
+
+I’m sorry for all the repetitive code you felt you needed to write. That’s my fault.
+(もしも繰り返し同じコードが書かれてるなら、**コードたち**よ、ほんとごめん。俺のせいだ。)
+</Layout>
+
+---
+
+# 😂
+
+---
+
+Reduxを理解するために自分でつくってみる
+
+---
+
+<CodeSurfer>
+
+```html title="Official Counter Sample"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redux basic example</title>
+  </head>
+  <body>
+    <div>
+      <p>
+        Clicked: <span id="value">0</span> times
+        <button id="increment">+</button>
+        <button id="decrement">-</button>
+        <button id="incrementIfOdd">Increment if odd</button>
+        <button id="incrementAsync">Increment async</button>
+      </p>
+    </div>
+    <script>
+      function counter(state, action) {
+        if (typeof state === 'undefined') {
+          return 0
+        }
+        switch (action.type) {
+          case 'INCREMENT':
+            return state + 1
+          case 'DECREMENT':
+            return state - 1
+          default:
+            return state
+        }
+      }
+      var store = Redux.createStore(counter)
+      var valueEl = document.getElementById('value')
+      function render() {
+        valueEl.innerHTML = store.getState().toString()
+      }
+      render()
+      store.subscribe(render)
+      document.getElementById('increment')
+        .addEventListener('click', function () {
+          store.dispatch({ type: 'INCREMENT' })
+        })
+      document.getElementById('decrement')
+        .addEventListener('click', function () {
+          store.dispatch({ type: 'DECREMENT' })
+        })
+      document.getElementById('incrementIfOdd')
+        .addEventListener('click', function () {
+          if (store.getState() % 2 !== 0) {
+            store.dispatch({ type: 'INCREMENT' })
+          }
+        })
+      document.getElementById('incrementAsync')
+        .addEventListener('click', function () {
+          setTimeout(function () {
+            store.dispatch({ type: 'INCREMENT' })
+          }, 1000)
+        })
+    </script>
+  </body>
+</html>
+```
+
+```html subtitle="ここを自前実装に変える"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redux basic example</title>
+    <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script>
+  </head>
+  <body>
+    <div>
+      <p>
+        Clicked: <span id="value">0</span> times
+        <button id="increment">+</button>
+        <button id="decrement">-</button>
+        <button id="incrementIfOdd">Increment if odd</button>
+        <button id="incrementAsync">Increment async</button>
+      </p>
+    </div>
+    <script>
+      function counter(state, action) {
+        if (typeof state === 'undefined') {
+          return 0
+        }
+        switch (action.type) {
+          case 'INCREMENT':
+            return state + 1
+          case 'DECREMENT':
+            return state - 1
+          default:
+            return state
+        }
+      }
+      var store = Redux.createStore(counter)
+      var valueEl = document.getElementById('value')
+      function render() {
+        valueEl.innerHTML = store.getState().toString()
+      }
+      render()
+      store.subscribe(render)
+      document.getElementById('increment')
+        .addEventListener('click', function () {
+          store.dispatch({ type: 'INCREMENT' })
+        })
+      document.getElementById('decrement')
+        .addEventListener('click', function () {
+          store.dispatch({ type: 'DECREMENT' })
+        })
+      document.getElementById('incrementIfOdd')
+        .addEventListener('click', function () {
+          if (store.getState() % 2 !== 0) {
+            store.dispatch({ type: 'INCREMENT' })
+          }
+        })
+      document.getElementById('incrementAsync')
+        .addEventListener('click', function () {
+          setTimeout(function () {
+            store.dispatch({ type: 'INCREMENT' })
+          }, 1000)
+        })
+    </script>
+  </body>
+</html>
+```
+
+```diff 31[19:44],34[29:45],37,40
+
+```
+
+```diff 31[19:44] subtitle="まずはcreateStoreメソッドをつくっていく"
 
 ```
 
