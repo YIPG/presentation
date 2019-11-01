@@ -15,8 +15,9 @@ export const theme = vsDark;
 # 自己紹介
 
 - 伊藤友哉
-- 東工大 B4
-- 2018/9 から React 触り始めた
+- 東工大B5 (あ。。。)
+- 2018/9からReact&プログラミング始めた
+- twitter: [@yuyaito_hoge](https://twitter.com/yuyaito_hoge)
 
 ---
 
@@ -34,6 +35,21 @@ Redux とは
   }}
   src={"https://redux.js.org/"}
 ></iframe>
+
+---
+
+# Pros
+
+1. テスタビリティが高い
+1. 開発者が増えてもコンフリクトが起きづらい
+1. Contextネスト地獄, Propsバケツリレー地獄が消える
+
+---
+
+# Cons
+
+1. コードが冗長になりがち
+1. 書いてて楽しくない()
 
 ---
 
@@ -229,266 +245,7 @@ switch (action.type) {
 
 ---
 
-<CodeSurfer>
-
-```js
-console.log(1);
-console.log(2);
-console.log(3);
-```
-
-```js 1
-console.log(1);
-console.log(2);
-console.log(3);
-```
-
-```js
-console.log(1);
-console.log(2);
-console.log(3);
-console.log(4);
-console.log(5);
-```
-
-</CodeSurfer>
-
----
-
-<CodeSurfer>
-
-```js title="コンポーネント"
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import CameraAlt from '@material-ui/icons/CameraAlt';
-import { nameChanged, profileChanged, profileImageChanged, profileGet, profileFinish } from '../../actions';
-// import Fab from '@material-ui/core/Fab';
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-const styles = theme => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-    circularprogress :{
-        marginTop: theme.spacing.unit * 20
-    },
-    nameform: {
-        marginTop:  theme.spacing.unit * 2,
-        width: 150,
-    },
-    textform: {
-        marginTop:  theme.spacing.unit * 5,
-        width: 300,
-    },
-    inputZone : {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 160,
-        height: 160,
-        margin: '20px 0',
-        border: `2px dashed ${theme.palette.grey[400]}`
-    },
-    inputZoneIntro: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    inputZoneOnImage : {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 160,
-        height: 160,
-        margin: '20px 0',
-        border: `1px ${theme.palette.grey[400]}`
-    },
-    imageZone : {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // width: 160,
-        height: 160,
-    },
-    icon: {
-        fontSize: 80,
-        color: theme.palette.grey[500]
-      },
-    font: {
-        color: theme.palette.grey[500]
-    },
-    button: {
-        marginTop: theme.spacing.unit * 3
-    }
-});
-
-class Prof extends Component {
-    state = {
-        edit: false,
-        imageUpdated: false
-    }
-
-    componentDidMount(){
-        this.props.profileGet(this.props.user.uid)
-    }
-
-    onNameChange(text) {
-        this.props.nameChanged(text.target.value);
-    }
-
-    onProfileChange(text) {
-        this.props.profileChanged(text.target.value)
-    }
-
-    renderButton(){
-        if(this.props.profile.updateLoading){
-            return <CircularProgress size={30} className={this.props.classes.button} />
-        }
-        return this.state.edit && 
-            <Button
-                variant="outlined"
-                onClick={this.handleFinish.bind(this)}
-                className={this.props.classes.button}
-                color="primary"
-            >
-                完了する
-            </Button>
-        
-    }
-
-    handleChange(e){
-        this.setState({
-            imageUpdated: true
-        });
-        const files = e.target.files;
-        if(files.length !== 0) {
-            this.props.profileImageChanged(files[0])
-        }
-    }
-
-    handleFinish(){
-        const{male, age, region, name, profile, profileImage} = this.props.profile;
-
-        this.props.profileFinish({male, age, region, name, profile, profileImage});
-        this.setState({edit: !this.state.edit}) ;
-    }
-
-    render() {
-        const { classes, profile } = this.props;
-        const { profileImage } = profile;
-
-        let img_src = profile.loading? "": profile.profileImageURL;
-        let updated_image_src =  this.state.imageUpdated? URL.createObjectURL(profileImage):"";
-
-        if(profile.loading){
-            return (
-                <div className={classes.root}>
-                    <CircularProgress className={classes.circularprogress} size={60} />
-                </div>
-            )
-        }
-        return (
-            <div
-                className={classes.root}
-            >
-                <label className={profile.loading?classes.inputZone:classes.inputZoneOnImage}>
-                    {profile.loading ? 
-                        <div className={classes.inputZoneIntro}>
-                        <CameraAlt className={classes.icon} />
-                        <Typography variant="caption" className={classes.font}>必須</Typography>
-                        </div>:
-                        <img className={classes.imageZone} alt="" src={this.state.imageUpdated ? updated_image_src :img_src} />
-                    }
-                    <input 
-                        disabled={!this.state.edit}
-                        type="file"
-                        accept="image/*"
-                        onChange={this.handleChange.bind(this)}
-                        style={{display: 'none'}} 
-                    />
-                </label>
-                
-                <TextField
-                    disabled={!this.state.edit}
-                    className={classes.nameform}
-                    label='名前'
-                    value={profile.name}
-                    onChange={this.onNameChange.bind(this)}
-                    autoFocus
-                />
-                <TextField
-                    disabled={!this.state.edit}
-                    className={classes.textform}
-                    id="outlined-multiline-flexible"
-                    label='プロフィール'
-                    multiline
-                    onChange={this.onProfileChange.bind(this)}
-                    value={this.props.profile.profile}
-                    rows="8"
-                    rowsMax="15"
-                    margin="normal"
-                    helperText="例:ギターが好きです！身長は170cmです！"
-                    variant="outlined"
-                />
-                <Button
-                    variant="outlined"
-                    onClick={() => this.setState({
-                        edit: !this.state.edit
-                    })} 
-                    className={classes.button}
-                    color="default"
-                >
-                    {this.state.edit ? "キャンセル" :"編集する"}
-                </Button>
-                {this.renderButton()}
-            </div>
-        );
-    }
-}
-
-const mapStateToProps = state => {
-    return {
-        profile: state.profile,
-        user: state.auth.user
-    };
-};
-
-export default withStyles(styles)(
-    connect(mapStateToProps, {
-        nameChanged,
-        profileChanged,
-        profileImageChanged,
-        profileGet,
-        profileFinish
-    })(
-        Prof
-));
-```
-
-```diff 199:214 subtitle="reduxと接続"
-
-```
-
-```diff 199:204 subtitle="state"
-
-```
-
-```diff 208:212 subtitle="action"
-
-```
-
-</CodeSurfer>
-
+# なんか冗長😢
 
 ---
 
@@ -501,6 +258,8 @@ My biggest regret with Redux is explaining it in terms of API instead of how to 
 
 I underestimated the temptation to twist it into a familiar conceptual model — and that it’s flexible enough to allow these contortions.
 (Reduxを自分が知ってるだけの概念にこんなにも無理やり結びつけたがるなんて、思いもしなかったよ)
+
+[ソース](https://twitter.com/dan_abramov/status/1039570011986321408)
 </Layout>
 
 ---
@@ -514,6 +273,8 @@ If you copy paste some action creators and reducers handling FETCH actions over 
 
 I’m sorry for all the repetitive code you felt you needed to write. That’s my fault.
 (もしも繰り返し同じコードが書かれてるなら、**コードたち**よ、ほんとごめん。俺のせいだ。)
+
+[ソース](https://twitter.com/dan_abramov/status/1039584557702553601)
 </Layout>
 
 ---
@@ -653,11 +414,47 @@ Reduxを理解するために自分でつくってみる
 </html>
 ```
 
-```diff 31[19:44],34[29:45],37,40
+```diff 31[19:44],34[29:45],37,40 title="今回実装するRedux関連メソッドたち"
 
 ```
 
-```diff 31[19:44] subtitle="まずはcreateStoreメソッドをつくっていく"
+```diff 18:30 title="Reducer" subtitle="ReducerはピュアなJavascriptです"
+
+```
+
+```diff 31 title="createStore" subtitle="createStoreはreducerを受け取りstoreを返します"
+
+```
+
+```diff 34[29:44] title="getState" subtitle="getStateは現在のstate値を返します"
+
+```
+
+```diff 34[29:44],18:30 subtitle="stateはreducer内で定義されている"
+
+```
+
+```diff 37 title="subscribe" subtitle="subscribeはstateが更新されるごとにrenderを発火させます"
+
+```
+
+```diff 37,33:35 title="render"
+
+```
+
+```diff 37,32:35 title="render" subtitle="renderはstate値をid="value"を持つDOM要素に書き込みます"
+
+```
+
+```diff 40 title="dispatch" subtitle="dispatchはactionをreducerに渡します"
+
+```
+
+```diff 31[19:44],34[29:45],37,40 title="今回実装するRedux関連メソッドたち"
+
+```
+
+```diff 31[19:44],34[29:45],37,40 title="今回実装するRedux関連メソッドたち" subtitle="ここからは実際にコードを書いていきます"
 
 ```
 
@@ -665,55 +462,15 @@ Reduxを理解するために自分でつくってみる
 
 ---
 
-<CodeSurferColumns themes={[vsDark, github]}>
-
-<Step>
-
-```js
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
-```
-
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
-```
-
-</Step>
-
-<Step>
-
-```js
-const lorem = (ipsum, dolor, sit) => {
-  const amet = dolor - ipsum;
-  return consectetur.adipiscing(
-    {
-      elit: sed.eiusmod(sit - dolor) / amet + 2,
-    },
-    (tempor, incididunt) => ipsum + amet * incididunt
-  );
-};
-
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
-```
-
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
-
-const sed = (eiusmod, tempor, incididunt) => {
-  const ut = tempor - eiusmod;
-  return labore.et(
-    {
-      amet: dolore.magna(incididunt - tempor) / ut + 2,
-    },
-    (aliqua, elit) => eiusmod + ut * elit
-  );
-};
-```
-
-</Step>
-
-</CodeSurferColumns>
+Coding...👨‍💻
 
 ---
 
-docs:  
-[codesurfer.pomb.us](https://codesurfer.pomb.us)
+## まとめ
+- Reduxのもっともシンプルな実装をしました
+- Reduxのつらみはとくになくなりませんでした😥
+- 各々がReduxぽいものを自作するほうが幸せになれると思いました
+
+---
+
+ありがとうございました🙏
