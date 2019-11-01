@@ -15,7 +15,7 @@ export const theme = vsDark;
 # 自己紹介
 
 - 伊藤友哉
-- 東工大B5 (あ。。。)
+- 東工大B5
 - 2018/9からReact&プログラミング始めた
 - twitter: [@yuyaito_hoge](https://twitter.com/yuyaito_hoge)
 
@@ -249,6 +249,244 @@ switch (action.type) {
 
 ---
 
+#### Context APIでReduxから逃げたい!
+
+---
+
+<CodeSurfer>
+
+```jsx title="とあるコンポーネント"
+import React, { useState, useEffect, createContext } from "react"
+import styled from "styled-components"
+import { Main } from "./main"
+import { Button } from "../util/Button"
+
+const Wrapper = styled.div`
+  margin: 1rem 0 0 0;
+  padding-top: 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const ButtonWrapper = styled.div`
+  flex-direction: row;
+  padding: 2rem;
+`
+
+const NavButton = styled(Button)`
+  margin: 0 2rem;
+`
+
+export const IdContext = createContext(null)
+export const fileNameContext = createContext(null)
+export const clickContext = createContext(null)
+
+export const Annotation = ({ match }) => {
+  const [index, setIndex] = useState(0)
+  const [data, setData] = useState(null)
+  const [fetchSuccess, setFetchSuccess] = useState(false)
+  useEffect(() => {
+    // 画像データをフェッチ
+    const fetchData = async id => {
+      const res = await fetch("http://localhost:3333/db?id=" + id)
+      const result = await res.json()
+      setData(result)
+      setFetchSuccess(true)
+    }
+
+    fetchData(match.params.id)
+  }, [match.params.id, index])
+
+  const preImage = () => {
+    index !== 0 && setIndex(index - 1)
+  }
+
+  const nextImage = () => {
+    index !== data.data.length - 1 && setIndex(index + 1)
+  }
+
+  if (!fetchSuccess)
+    return (
+      <Wrapper>
+        <h1>Loading...</h1>
+      </Wrapper>
+    )
+  return (
+    <Wrapper>
+      <h1>Select all squares with {data.task}</h1>
+      <ButtonWrapper>
+        {index !== 0 && (
+          <NavButton onClick={() => setIndex(index - 1)}>前へ</NavButton>
+        )}
+        {index !== data.data.length - 1 && (
+          <NavButton onClick={() => setIndex(index + 1)}>次へ</NavButton>
+        )}
+      </ButtonWrapper>
+    </Wrapper>
+  )
+}
+```
+
+```jsx subtitle="Provider地獄😖"
+import React, { useState, useEffect, createContext } from "react"
+import styled from "styled-components"
+import { Main } from "./main"
+import { Button } from "../util/Button"
+
+const Wrapper = styled.div`
+  margin: 1rem 0 0 0;
+  padding-top: 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const ButtonWrapper = styled.div`
+  flex-direction: row;
+  padding: 2rem;
+`
+
+const NavButton = styled(Button)`
+  margin: 0 2rem;
+`
+
+export const IdContext = createContext(null)
+export const fileNameContext = createContext(null)
+export const clickContext = createContext(null)
+
+export const Annotation = ({ match }) => {
+  const [index, setIndex] = useState(0)
+  const [data, setData] = useState(null)
+  const [fetchSuccess, setFetchSuccess] = useState(false)
+  useEffect(() => {
+    // 画像データをフェッチ
+    const fetchData = async id => {
+      const res = await fetch("http://localhost:3333/db?id=" + id)
+      const result = await res.json()
+      setData(result)
+      setFetchSuccess(true)
+    }
+
+    fetchData(match.params.id)
+  }, [match.params.id, index])
+
+  const preImage = () => {
+    index !== 0 && setIndex(index - 1)
+  }
+
+  const nextImage = () => {
+    index !== data.data.length - 1 && setIndex(index + 1)
+  }
+
+  if (!fetchSuccess)
+    return (
+      <Wrapper>
+        <h1>Loading...</h1>
+      </Wrapper>
+    )
+  return (
+    <Wrapper>
+      <h1>Select all squares with {data.task}</h1>
+      <IdContext.Provider value={match.params.id}>
+        <fileNameContext.Provider value={data.data[index].originalname}>
+          <clickContext.Provider value={data.images[index].regions}>
+            <Main
+              // hoge
+            />
+          </clickContext.Provider>
+        </fileNameContext.Provider>
+      </IdContext.Provider>
+      <ButtonWrapper>
+        {index !== 0 && (
+          <NavButton onClick={() => setIndex(index - 1)}>前へ</NavButton>
+        )}
+        {index !== data.data.length - 1 && (
+          <NavButton onClick={() => setIndex(index + 1)}>次へ</NavButton>
+        )}
+      </ButtonWrapper>
+    </Wrapper>
+  )
+}
+```
+
+</CodeSurfer>
+
+---
+
+# Reduxをみると
+
+---
+
+<CodeSurfer>
+
+```js title="アクション"
+export const sexChanged = (sex) => {
+    return {
+        type: SEX_CHANGED,
+        payload: sex
+    };
+};
+```
+
+```js subtitle="ほんとにこれでいいのか。。。？"
+export const sexChanged = (sex) => {
+    return {
+        type: SEX_CHANGED,
+        payload: sex
+    };
+};
+
+export const ageChanged = (age) => {
+    return {
+        type: AGE_CHANGED,
+        payload: age
+    };
+};
+
+export const regionChanged = (text) => {
+    console.log(text)
+    return {
+        type: REGION_CHANGED,
+        payload: text
+    };
+};
+
+export const nameChanged = (text) => {
+    return {
+        type: NAME_CHANGED,
+        payload: text
+    };
+};
+
+export const profileChanged = (text) => {
+    return {
+        type: PROFILE_CHANGED,
+        payload: text
+    };
+};
+
+export const profileImageChanged = (image) => {
+    return {
+        type: PROFILEIMAGE_CHANGED,
+        payload: image
+    };
+};
+
+export const snackChanged = (text) => {
+    return {
+        type: SNACK_CHANGED,
+        payload: text
+    };
+};
+```
+
+</CodeSurfer>
+
+---
+
 ### Redux作者のDan氏のツイート
 
 <Layout>
@@ -424,15 +662,15 @@ I underestimated the temptation to twist it into a familiar conceptual model —
 
 ```
 
-```diff 18:30 title="Reducer" subtitle="ReducerはピュアなJavascriptです"
+```diff 18:30 title="Reducer" subtitle="ReducerはピュアなJavascript"
 
 ```
 
-```diff 31 title="createStore" subtitle="createStoreはreducerを受け取りstoreを返します"
+```diff 31 title="createStore" subtitle="createStoreはreducerを受け取りstoreを返す"
 
 ```
 
-```diff 34[29:44] title="getState" subtitle="getStateは現在のstate値を返します"
+```diff 34[29:44] title="getState" subtitle="getStateは現在のstate値を返す"
 
 ```
 
@@ -440,7 +678,7 @@ I underestimated the temptation to twist it into a familiar conceptual model —
 
 ```
 
-```diff 37 title="subscribe" subtitle="subscribeはstateが更新されるごとにrenderを発火させます"
+```diff 37 title="subscribe" subtitle="subscribeはstateが更新されるごとにrenderを発火させる"
 
 ```
 
@@ -448,11 +686,11 @@ I underestimated the temptation to twist it into a familiar conceptual model —
 
 ```
 
-```diff 37,32:35 title="render" subtitle="renderはstate値をid="value"を持つDOM要素に書き込みます"
+```diff 37,32:35 title="render" subtitle="renderはstate値をid="value"を持つDOM要素に書き込む"
 
 ```
 
-```diff 40 title="dispatch" subtitle="dispatchはactionをreducerに渡します"
+```diff 40 title="dispatch" subtitle="dispatchはactionをreducerに渡す"
 
 ```
 
@@ -460,7 +698,7 @@ I underestimated the temptation to twist it into a familiar conceptual model —
 
 ```
 
-```diff 31[19:44],34[29:45],37,40 title="今回実装するRedux関連メソッドたち" subtitle="ここからは実際にコードを書いていきます"
+```diff 31[19:44],34[29:45],37,40 title="今回実装するRedux関連メソッドたち" subtitle="ここからは実際にコードを書いていく"
 
 ```
 
@@ -473,8 +711,8 @@ Coding...👨‍💻
 ---
 
 ## まとめ
-- Reduxのもっともシンプルな実装をしました
-- Reduxと仲良くなれた気がしました😎
+- Reduxのもっともシンプルな実装をした
+- Reduxと仲良くなれた気がした😎
 
 ---
 
