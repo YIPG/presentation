@@ -6,9 +6,10 @@ export const Layout = ({ children }) => (
       width: "80vw",
       height: "70vh",
       padding: "2vh 5vw",
+      margin: "5vh",
       backgroundColor: "#FFFFDD",
       color: "#1E1E1E",
-      fontSize: "0.7em",
+      fontSize: "2vw",
       whiteSpace: "pre-wrap",
     }}
   >
