@@ -1,6 +1,9 @@
-# MDX Deck + Code Surfer template
+# [Redux from Scratch Presentation](https://redux-from-scratch.netlify.com/)
 
-This project was generated with the `npm init code-surfer-deck` command.
+<p align="center">
+<img width="70%" src="https://user-images.githubusercontent.com/19145527/68013853-5bcc7080-fcd1-11e9-80f7-9142a8a38d76.gif">
+</p>
+This is the presentation about Redux in Japanese. Created by MDX-Deck and Code-Surfer.
 
 ## Development
 
